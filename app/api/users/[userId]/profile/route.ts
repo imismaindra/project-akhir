@@ -7,8 +7,11 @@ interface UserProfileResponse {
   user: {
     id: string;
     username: string;
+    full_name: string | null;
     bio: string | null;
     profilePictureUrl: string | null;
+    website: string | null;
+    location: string | null;
     createdAt: string;
   };
   stats: {
@@ -28,12 +31,15 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ userId: st
     const userRes = await pool.query<{
       id: string;
       username: string;
+      full_name: string | null;
       bio: string | null;
       profile_picture_url: string | null;
+      website: string | null;
+      location: string | null;
       created_at: Date;
     }>(
       `
-      SELECT id, username, bio, profile_picture_url, created_at
+      SELECT id, username, full_name, bio, profile_picture_url, website, location, created_at
       FROM users
       WHERE id = $1::uuid
       `,
@@ -107,8 +113,11 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ userId: st
         user: {
           id: userRow.id,
           username: userRow.username,
+          full_name: userRow.full_name,
           bio: userRow.bio,
           profilePictureUrl: userRow.profile_picture_url,
+          website: userRow.website,
+          location: userRow.location,
           createdAt: userRow.created_at.toISOString(),
         },
         stats: {
@@ -130,8 +139,11 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ userId: st
       user: {
         id: userRow.id,
         username: userRow.username,
+        full_name: userRow.full_name,
         bio: userRow.bio,
         profilePictureUrl: userRow.profile_picture_url,
+        website: userRow.website,
+        location: userRow.location,
         createdAt: userRow.created_at.toISOString(),
       },
       stats: {
